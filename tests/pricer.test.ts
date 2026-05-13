@@ -1,4 +1,4 @@
-import { it } from '@jest/globals';
+import { it, expect } from '@jest/globals';
 import { createPricer } from 'pricer';
 
 it('provides the latest price given the options selected so far', () => { 
@@ -22,4 +22,3 @@ it('provides the latest price given the options selected so far', () => {
     const priceAfterThirdSelection = pricer('size', 'large');
     expect(priceAfterThirdSelection).toBe(2.50);
 });
-
