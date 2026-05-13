@@ -1,6 +1,10 @@
 import { it, expect, test } from '@jest/globals';
 import { createPricer } from 'pricer';
 
+function isNullOrEmpty(str: string | null | undefined): boolean {
+  return !str || str.trim().length === 0;
+}
+
 it('provides the latest price given the options selected so far', () => {
   // starting a coffee order
   const pricer = createPricer();
@@ -23,24 +27,71 @@ it('provides the latest price given the options selected so far', () => {
   expect(priceAfterThirdSelection).toBe(2.5);
 });
 
-const cases: [string, string, string, string, number][] = [
-  ['size', 'large', 'creamer', 'non-dairy', 2.5],
-  ['size', 'large', 'creamer', 'dairy', 2.25],
-  ['size', 'large', 'creamer', 'none', 2.0],
-  ['size', 'medium', 'creamer', 'non-dairy', 2.0],
-  ['size', 'medium', 'creamer', 'dairy', 1.75],
-  ['size', 'medium', 'creamer', 'none', 1.5],
-  ['size', 'small', 'creamer', 'non-dairy', 1.5],
-  ['size', 'small', 'creamer', 'dairy', 1.25],
-  ['size', 'small', 'creamer', 'none', 1.0],
+const simpleCases: [string, string, number][] = [
+  ['large', 'non-dairy', 2.5],
+  ['large', 'dairy', 2.25],
+  ['large', 'none', 2.0],
+  ['medium', 'non-dairy', 2.0],
+  ['medium', 'dairy', 1.75],
+  ['medium', 'none', 1.5],
+  ['small', 'non-dairy', 1.5],
+  ['small', 'dairy', 1.25],
+  ['small', 'none', 1.0],
 ];
 
-test.each(cases)(
+test.each(simpleCases)(
   'size=%s value=%s, creamer=%s value=%s → expect $%s',
-  (sizeKey, sizeVal, creamKey, creamVal, expected) => {
+  (sizeVal, creamVal, expected) => {
     const pricer = createPricer();
-    pricer(sizeKey, sizeVal);
-    const result = pricer(creamKey, creamVal);
+    pricer('size', sizeVal);
+    const result = pricer('creamer', creamVal);
     expect(result).toBe(expected);
+  },
+);
+
+const changeCases: [[string, string, number], [string, string, number]][] = [
+  [
+    ['large', 'none', 2.0],
+    ['small', 'none', 1.0],
+  ],
+  [
+    ['large', 'dairy', 2.25],
+    ['small', 'dairy', 1.25],
+  ],
+  [
+    ['large', 'dairy', 2.25],
+    ['medium', 'none', 1.5],
+  ],
+  [
+    ['medium', 'dairy', 1.75],
+    ['medium', 'non-dairy', 2.0],
+  ],
+  [
+    ['large', 'non-dairy', 2.5],
+    ['small', 'dairy', 1.25],
+  ],
+];
+
+test.each(changeCases)(
+  'changing %s from %s to %s should update price from $%s to $%s',
+  (initial, change) => {
+    const pricer = createPricer();
+    var initialPrice: number = 0;
+    if (!isNullOrEmpty(initial[0])) {
+      initialPrice = pricer('size', initial[0]);
+    }
+    if (!isNullOrEmpty(initial[1])) {
+      initialPrice = pricer('creamer', initial[1]);
+    }
+    expect(initialPrice).toBe(initial[2]);
+
+    var updatedPrice: number = 0;
+    if (!isNullOrEmpty(change[0])) {
+      updatedPrice = pricer('size', change[0]);
+    }
+    if (!isNullOrEmpty(change[1])) {
+      updatedPrice = pricer('creamer', change[1]);
+    }
+    expect(updatedPrice).toBe(change[2]);
   },
 );
