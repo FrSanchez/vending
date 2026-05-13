@@ -1,4 +1,4 @@
-import { it, expect } from '@jest/globals';
+import { it, expect, test } from '@jest/globals';
 import { createPricer } from 'pricer';
 
 it('provides the latest price given the options selected so far', () => { 
@@ -22,3 +22,25 @@ it('provides the latest price given the options selected so far', () => {
     const priceAfterThirdSelection = pricer('size', 'large');
     expect(priceAfterThirdSelection).toBe(2.50);
 });
+
+const cases: [string, string, string, string, number][] = [
+  ['size', 'large', 'creamer', 'non-dairy', 2.50],
+  ['size', 'large', 'creamer', 'dairy',     2.25],
+  ['size', 'large', 'creamer', 'none',     2.00],
+  ['size', 'medium', 'creamer', 'non-dairy', 2.00],
+  ['size', 'medium', 'creamer', 'dairy',     1.75],
+  ['size', 'medium', 'creamer', 'none',     1.50],
+  ['size', 'small', 'creamer', 'non-dairy', 1.50],
+  ['size', 'small', 'creamer', 'dairy', 1.25],
+  ['size', 'small', 'creamer', 'none',      1.00],
+];
+
+test.each(cases)(
+  'size=%s value=%s, creamer=%s value=%s → expect $%s',
+  (sizeKey, sizeVal, creamKey, creamVal, expected) => {
+    const pricer = createPricer()
+    pricer(sizeKey, sizeVal)
+    const result = pricer(creamKey, creamVal)
+    expect(result).toBe(expected)
+  }
+)
