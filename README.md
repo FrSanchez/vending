@@ -13,12 +13,12 @@ The following variables affect the price of the coffee: size and creamer.
 The prices are:
 
 ### Size
-Small: $1.00
-Medium: $1.50
-Large: $2.00
+- Small: $1.00
+- Medium: $1.50
+- Large: $2.00
 
 
 ### Creamer
-None: $0.00
-Dairy: $0.25
-Non-Dairy: $0.50
+- None: $0.00
+- Dairy: $0.25
+- Non-Dairy: $0.50
