@@ -18,6 +18,7 @@ export interface Pricer {
   (category: Category, option: Option): Price;
 }
 
+// simplle price map to look up the price of each option
 const priceMap: Record<Option, number> = {
   // size options
   small: 1.0,
@@ -33,8 +34,10 @@ const priceMap: Record<Option, number> = {
  * A new pricer is created for each coffee being purchased.
  */
 export const createPricer = (): Pricer => {
+  // keep track of the current calculated price
   const price = { size: 0, creamer: 0 };
   // your code goes here
+  // instantiate and return a function to calculate price
   return (category: Category, option: Option): Price => {
     if (category == 'size') {
       price.size = priceMap[option];

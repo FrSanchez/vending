@@ -112,7 +112,7 @@ describe('pricer', () => {
     [
       ['small', 'dairy', 1.25],
       ['small', 'dairy', 1.25],
-    ]
+    ],
   ];
 
   test.each(changeCases)(

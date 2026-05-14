@@ -11,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/FrSanchez/vending.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["vending", "typescript", "examples"],
+  "author": "Francisco Sanchez",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/FrSanchez/vending/issues"
