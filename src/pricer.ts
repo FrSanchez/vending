@@ -19,9 +19,11 @@ export interface Pricer {
 }
 
 const priceMap: Record<Option, number> = {
+  // size options
   small: 1.0,
   medium: 1.5,
   large: 2.0,
+  // creamer options
   none: 0,
   dairy: 0.25,
   'non-dairy': 0.5,
@@ -31,19 +33,15 @@ const priceMap: Record<Option, number> = {
  * A new pricer is created for each coffee being purchased.
  */
 export const createPricer = (): Pricer => {
-  var size = 0;
-  var creamer = 0;
-  var price = 0;
+  const price = { size: 0, creamer: 0 };
   // your code goes here
   return (category: Category, option: Option): Price => {
-    // your code goes here
     if (category == 'size') {
-      size = priceMap[option];
+      price.size = priceMap[option];
     }
     if (category == 'creamer') {
-      creamer = priceMap[option];
+      price.creamer = priceMap[option];
     }
-    price = size + creamer;
-    return price;
+    return price.size + price.creamer;
   };
 };
