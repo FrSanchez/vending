@@ -19,11 +19,14 @@ export interface Pricer {
 }
 
 // simplle price map to look up the price of each option
-const priceMap: Record<Option, number> = {
+const sizeMap: Partial<Record<Option, number>> = {
   // size options
   small: 1.0,
   medium: 1.5,
   large: 2.0,
+};
+
+const creamerMap: Partial<Record<Option, number>> = {
   // creamer options
   none: 0,
   dairy: 0.25,
@@ -40,11 +43,21 @@ export const createPricer = (): Pricer => {
   // instantiate and return a function to calculate price
   return (category: Category, option: Option): Price => {
     if (category == 'size') {
-      price.size = priceMap[option];
+      if (!(option in sizeMap)) {
+        throw new Error(`Invalid size option: ${option}`);
+      }
+      price.size = sizeMap[option];
     }
     if (category == 'creamer') {
-      price.creamer = priceMap[option];
+      if (!(option in creamerMap)) {
+        throw new Error(`Invalid creamer option: ${option}`);
+      }
+      price.creamer = creamerMap[option];
     }
-    return price.size + price.creamer;
+    const total = price.size + price.creamer;
+    if (total != total) {
+      throw new Error(`Invalid price calculation: ${total}`);
+    }
+    return total;
   };
 };

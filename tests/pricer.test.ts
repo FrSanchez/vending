@@ -49,11 +49,10 @@ describe('pricer', () => {
     ['small', 'non-dairy', 1.5],
     ['small', 'dairy', 1.25],
     ['small', 'none', 1.0],
-    ['none', 'none', 0], // not a valid scenario?
   ];
 
   test.each(simpleCases)(
-    'size=%s value=%s, creamer=%s value=%s → expect $%s',
+    'size=%s, creamer=%s -> expect $%s',
     (sizeVal, creamVal, expected) => {
       const pricer = createPricer();
       pricer('size', sizeVal);
@@ -126,6 +125,38 @@ describe('pricer', () => {
       pricer('size', change[0]);
       const updatedPrice = pricer('creamer', change[1]);
       expect(updatedPrice).toBe(change[2]);
+    },
+  );
+
+  const sizeErrors: [string | number | null, string][] = [
+    ['none', 'none'],
+    ['dairy', 'none'],
+    ['non-dairy', 'foo'],
+    ['', 'none'],
+    [null, 'none'],
+    [123, 'none'],
+  ];
+
+  const creamerErrors: [string, string | number | null][] = [
+    ['small', 'small'],
+    ['medium', 'medium'],
+    ['large', 'large'],
+    ['small', ''],
+    ['small', null],
+    ['small', 123],
+  ];
+
+  test.each(sizeErrors)('(Error) size=%s, creamer=%s', (sizeVal, creamVal) => {
+    const pricer = createPricer();
+    expect(() => pricer('size', sizeVal)).toThrow();
+  });
+
+  test.each(creamerErrors)(
+    '(Error) size=%s, creamer=%s',
+    (sizeVal, creamVal) => {
+      const pricer = createPricer();
+      pricer('size', sizeVal);
+      expect(() => pricer('creamer', creamVal)).toThrow();
     },
   );
 });
